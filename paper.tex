@@ -1,0 +1,247 @@
+%%%% For double-blind review submission, w/o CCS and ACM Reference (max submission space)
+\documentclass[10pt, sigplan]{acmart}
+%%\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For double-blind review submission, w/ CCS and ACM Reference
+%\documentclass[sigplan,10pt,review,anonymous]{acmart}\settopmatter{printfolios=true}
+%% For single-blind review submission, w/o CCS and ACM Reference (max submission space)
+%\documentclass[sigplan,10pt,review]{acmart}\settopmatter{printfolios=true,printccs=false,printacmref=false}
+%% For single-blind review submission, w/ CCS and ACM Reference
+%\documentclass[sigplan,10pt,review]{acmart}\settopmatter{printfolios=true}
+%% For final camera-ready submission, w/ required CCS and ACM Reference
+%\documentclass[sigplan,10pt]{acmart}\settopmatter{}
+
+
+%% Conference information
+%% Supplied to authors by publisher for camera-ready submission;
+%% use defaults for review submission.
+%\acmConference[PL'17]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2017}{New York, NY, USA}
+%\acmYear{2017}
+%\acmISBN{} % \acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+%\acmDOI{} % \acmDOI{10.1145/nnnnnnn.nnnnnnn}
+%\startPage{1}
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission;
+%% use 'none' for review submission.
+\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2017}           %% If different from \acmYear
+
+%% Bibliography style
+
+%\bibliographystyle{ACM-Reference-Format}
+
+\citestyle{acmnumeric}   
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Note: Authors migrating a paper from traditional SIGPLAN
+%% proceedings format to PACMPL format must update the
+%% '\documentclass' and topmatter commands above; see
+%% 'acmart-pacmpl-template.tex'.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{xspace}
+\usepackage{graphicx}
+\usepackage{ifthen}
+\usepackage{pgfplots}
+\usepackage{listings}
+\usepackage{multirow}
+\usepgfplotslibrary{statistics}
+\usepackage{dblfloatfix} %enable fig at bottom of page
+%\input{macros.tex}
+
+\usepackage{xcolor}
+\newcommand{\todo}[1]{\color{orange}\fbox{\bfseries\sffamily\scriptsize TODO:}{\sf\small$\blacktriangleright$\textit{#1}$\blacktriangleleft$}\color{black}}
+\newcommand{\sd}[1]{\color{red}\fbox{\bfseries\sffamily\scriptsize Stef:}{\sf\small$\blacktriangleright$\textit{#1}$\blacktriangleleft$}\color{black}}
+\newcommand{\sk}[1]{\color{blue}\fbox{\bfseries\sffamily\scriptsize Sophie:}{\sf\small$\blacktriangleright$\textit{#1}$\blacktriangleleft$}\color{black}}
+\newcommand{\cba}[1]{\color{purple}\fbox{\bfseries\sffamily\scriptsize Clement:}{\sf\small$\blacktriangleright$\textit{#1}$\blacktriangleleft$}\color{black}}
+%\newcommand*{rotatebox{75}}
+\input{macros}
+
+\begin{document}
+
+%%%
+% Legend definition (so I can change it once for all)
+%%%
+
+\def\legBase{Baseline\xspace}
+\def\legSmartSyntaxPlug{Syntax\xspace}
+\def\legSlangPlug{Plugin\xspace}
+\def\legSlang{Slang\xspace}
+\def\legRTL{Slang+RTL\xspace}
+\def\LLVMMac{LLVM-Mac\xspace}
+\def\GCCLinux{GCC-Linux\xspace}
+\def\plotHeight{6.8cm}
+
+%%%
+% End Legend
+%%%
+
+%% Title information
+\title[Over Twenty Years of Virtual Machine Development Through Simulation]{Over Twenty Years of Virtual Machine Development and Debugging Through Simulation}
+
+%% Author with single affiliation.
+\author{Eliot Miranda}
+                                        %% can be repeated if necessary
+\affiliation{
+  %\position{Position1}
+ % \department{VM team}              %% \department is recommended
+  \institution{Feenk}            %% \institution is required
+ % \streetaddress{Street1 Address1}
+  \city{San Francisco}
+  %\state{France}
+  %\postcode{Post-Code1}
+  \country{California}                    %% \country is recommended
+}
+\email{eliot.miranda@gmail.com}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{Cl\'ement B\'era}
+\affiliation{
+  % \position{}
+	\department{Software Languages Lab}              %% \department is recommended
+	\institution{Vrije Universiteit Brussel}            %% \institution is required
+	\city{Brussel}
+  % \state{}
+  % \postcode{}
+	\country{Belgium}                    %% \country is recommended
+}
+\email{clement.bera@vub.ac.be}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{Elisa Gonzalez Boix}
+\affiliation{
+  % \position{}
+	\department{Software Languages Lab}              %% \department is recommended
+	\institution{Vrije Universiteit Brussel}            %% \institution is required
+	\city{Brussel}
+  % \state{}
+  % \postcode{}
+	\country{Belgium}                    %% \country is recommended
+}
+\email{egonzale@vub.ac.be}          %% \email is recommended
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+Fork from Dan Ing VM
+Dev in Restr St, Comp through C, simulation by interpreting the Slang.
+Evolved through the years with processor simulator and various extensions
+We explain how we generate the prod VM and how we simulate it for dev and debugging.
+We go through 2 experience example, GC and JIT, and show why we believe how valuable it the infra
+
+\end{abstract}
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+%\begin{CCSXML}
+%<ccs2012>
+%<concept>
+%<concept_id>10011007.10011006.10011008</concept_id>
+%<concept_desc>Software and its engineering~General programming languages</concept_desc>
+%<concept_significance>500</concept_significance>
+%</concept>
+%<concept>
+%<concept_id>10003456.10003457.10003521.10003525</concept_id>
+%<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+%<concept_significance>300</concept_significance>
+%</concept>
+%</ccs2012>
+%\end{CCSXML}
+
+%\ccsdesc[500]{Software and its engineering~General programming languages}
+%\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{Just-in-Time compiler, Virtual machine, Managed runtime, Tools}  %% \keywords are mandatory in final camera-ready submission
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+\section{Introduction}
+\label{sec:intro}
+
+\section{Virtual Machine Simulation \& Production Infrastructure}
+\label{sec:VMSimulation}
+
+\subsection{Generating the Production Virtual Machine}
+
+\subsection{Simulating the Virtual Machine}
+
+\section{Garbage Collection Development}
+\label{sec:GCExp}
+
+default behavior, cloneOnSavenge/GC
+Lemming debugging
+
+Levels of Assertions: ST only (debugging code in St), Slang/C, Node.
+
+\section{Just-in-Time Compiler Development}
+\label{sec:JITExp}
+Back-in-time debugging of mahcine state
+Conditional stepping.
+
+\section{Virtual Machine Analysis}
+\label{sec:Analysis}
+Analysis of caches
+
+Analysis of machine code zone
+
+Analysis of the heap
+
+\section{Discussion, Related Work and Conclusion}
+
+\subsection{Discussion}
+Simulation perf and its limitations
+Out of the simulation, FFI calls and call-backs
+
+\subsection{Related Work}
+Maxine inspectors
+
+RPython toolchain, though it seems they don't do it (Balance abstraction and time to compile/simulate)
+
+\subsection*{Conclusion}
+
+
+%% Acknowledgments
+%%\begin{acks}                            %% acks environment is optional
+                                        %% contents suppressed with 'anonymous'
+  %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+  %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+  %% acknowledge financial support and will be used by metadata
+  %% extraction tools.
+%  This material is based upon work supported by the
+%  \grantsponsor{GS100000001}{National Science
+%    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
+%  No.~\grantnum{GS100000001}{nnnnnnn} and Grant
+%  No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
+%  conclusions or recommendations expressed in this material are those
+%  of the author and do not necessarily reflect the views of the
+%  National Science Foundation.
+%\end{acks}
+
+%% Bibliography
+\bibliographystyle{alpha}
+\bibliography{sista,rmod,others}
+
+\end{document}

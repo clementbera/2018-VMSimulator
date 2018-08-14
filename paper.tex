@@ -187,7 +187,7 @@ As shown in Figure \ref{fig:VMCompilation}, the VM code base is written both in 
 
 \begin{figure}[bth!]
 		\centering
-		\includegraphics[width=0.62\linewidth]{figures/VMCompilation}
+		\includegraphics[width=0.6\linewidth]{figures/VMCompilation}
 		\caption{Cog VM compilation}
 		\label{fig:VMCompilation}
 \end{figure}
@@ -237,27 +237,30 @@ The main limitation we have is with Foreign Function Interfaces (FFI). Most bugs
 \section{Garbage Collection Development}
 \label{sec:GCExp}
 
-REf to papers
+Recently, to evaluate new garbage collection algorithm against standard algorithm, we implemented a Mark-Sweep in addition to the existing Mark-Compact for old space garbage collection. The whole implementation was done in the simulator, and only when it was working there, we compiled it to C and it was working out of the box. To describe the implementation process, we need to discuss briefly first the assertion levels in the VM. Then we will show how we debugged the algorithm.
 
-Example of the GC impl.
-Debugging mainly from ST, standard dev tools.
+\paragraph{Assertions.}To stabilise our code base and find easily production bugs, all the code based is annotated with assertion, ensuring a specific state is as the VM developer would expect it to be, and stopping the program execution if not. We have basically three levels of assertions. Assertions written in plain Smalltalk are convenient since more complex constraints can be expressed, but they can be performed only in the simulator. Assertions written in Slang are also verified in simulation mode, but they are compiled to C. The C compiler, based on a compilation flag, then picks if it wants to compile the VM with or without assertions. The VM with assertions is used for debugging and to recreate snapshots of runtime juste before they crash. The VM without assertions is the production VM.
 
-default behavior, cloneOnSavenge/GC
-Lemming debugging
-
-Levels of Assertions: ST only (debugging code in St), Slang/C, Node.
+\paragraph{Simulation.} Once we had partially written the new Sweep algorithm, we started the simulator. Since the algorithm was partially written, we could just write the missing pieces inside the debugger, installing the new code at runtime, as one can do it in Smalltalk. In addition, the simulator has an interesting property: each time it performs a GC, either a scavenge or an old space collection, it first copies the simulated memory (\emph{i.e.,} the heap), performs the GC there, and if no assertion fails, it then performs the GC on the original version. This means that if the algorithm was not working, an assertion would fail or an error such as incorrect memory access would happen in a copy of the heap. The simulator can then reproduce the exact same crash as many times as we want duplicating again and again the same original heap. This is very convenient to debug specific GC bugs because often in GC bugs, when the bug happens, the memory is already corrupted and it's quite difficult to track back where the bug comes from without rewinding the memory state.
 
 \section{Just-in-Time Compiler Development}
 \label{sec:JITExp}
 
+We firstly discuss how we use the simulator to debug crashes in deployed applications, then how we use in-image compilation to develop the JIT itself.
+
 \subsection{Debugging crashes with conditional breakpoints in machine code}
+
+TOWRITE FROM MY YOUTUBE VIDEO.
 Back-in-time debugging of machine state
 Conditional stepping.
 
 Ref Sista
 
 \subsection{Optimizing the templates with in-image compilation}
-+ ref low overhead RB AND explain template optimized with in-image compilation.
+
+A few years ago, we added support in the VM for read-only objects \cite{ROObject}. Read-only objects were critical performance-wise for specific customers using them in the context of object databases. To maximize the performance, we changed the templates in the JIT compiler for the different memory stores. Since the template JIT has to generate very quickly machine code, it goes through the code three times: (1) it scans the bytecode, (2) it generates abstract instructions from the bytecode and (3) it generates the native instructions from the abstract instructions. The abstract instructions are mapped almost one to one to machine instructions, their main purpose is to compact the generated code by removing Nops used for jump targets or finding out out the size of jumps.
+
+To optimize the template, we use the in-image compilation framework. We selected a method with a single store to make it simple. We requested the JIT to generate the machine code and changed the store template until the machine code generated was the exact instructions we wanted. It is possible, in in-image compilation, to use the Smalltalk debugger on the JIT code itself to inspect the JIT state and fix the code on -the-fly without any recompilation process. Once we went through the few store templates (there are a few different templates for optimizations purposes, for example, storing a constant integer does not require a garbage collector write barrier check),
 
 \section{Virtual Machine Analysis: Directing performance decisions}
 \label{sec:Analysis}
@@ -314,7 +317,7 @@ We designed the polymorphic inline caches (PICs) with two implementations:
 
 One idea we had was to promote a monomorphic inline cache straight to an open PIC if available, and create the closed PIC only if no open PIC is available for the given selector. The benefit is avoiding lots of code space modifications and an allocation. The downside is replacing faster closed PIC dispatch with slower open PIC dispatch. The question is how many send sites would be prematurely promoted to megamorphic, or how many closed PICs have selectors for which there are open PICs. Analysing the question is easy in our context.
 
-The analysis result showed that 17\% of polymorphic send sites would get prematurely promoted. So we have implemented a simple sharing scheme. The JIT maintains a linked list of open PICs, and before it creates a closed PIC for a send site it will patch it to an open PIC if the list contains one for the send?s selector.
+The analysis result showed that 17\% of polymorphic send sites would get prematurely promoted. So we have implemented a simple sharing scheme. The JIT maintains a linked list of open PICs, and before it creates a closed PIC for a send site it will patch it to an open PIC if the list contains one for the send's selector.
 
 \section{Related Work and Conclusion}
 

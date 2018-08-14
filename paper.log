@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.22)  14 AUG 2018 19:01
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.22)  14 AUG 2018 19:04
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1431,7 +1431,13 @@ Package pdftex.def Info: figures/VMCompilation.pdf used on input line 196.
  [2.2 <./figures/VMCompilation.pdf>] [3.3]
 Underfull \vbox (badness 3098) has occurred while \output is active []
 
- [4.4]
+
+Overfull \hbox (9.30594pt too wide) in paragraph at lines 280--282
+\T1/LinuxLibertineT-TLF/m/n/10 (-20) only ob-jects [[]]. Read-only ob-jects wer
+e crit-i-cal performance-
+ []
+
+[4.4]
 Underfull \hbox (badness 10000) in paragraph at lines 326--326
 [][][]\T1/LinuxLibertineT-TLF/m/n/8 (+20) http://www.mirandabanda.org/cogblog/2
 011/03/01/build-me-a-jit-as-
@@ -1457,13 +1463,13 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 500E5A44A4A1D8F827D3A7A4479A3F86;3342.
  ) 
 Here is how much of TeX's memory you used:
- 38052 strings out of 493014
- 817372 string characters out of 6133351
+ 38055 strings out of 493014
+ 817450 string characters out of 6133351
  1019044 words of memory out of 5000000
  40384 multiletter control sequences out of 15000+600000
- 160192 words of font info for 308 fonts, out of 8000000 for 9000
+ 160563 words of font info for 310 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 62i,11n,94p,1128b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,11n,94p,1274b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc
 }{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc}
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{
@@ -1477,7 +1483,7 @@ bertineTBI.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/libertine
 /LinLibertineTI.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfo
 nts/rtxr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/txs
 y.pfb>
-Output written on paper.pdf (6 pages, 388947 bytes).
+Output written on paper.pdf (6 pages, 389072 bytes).
 PDF statistics:
  232 PDF objects out of 1000 (max. 8388607)
  200 compressed objects within 2 object streams

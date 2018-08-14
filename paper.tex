@@ -220,6 +220,8 @@ As the VM can be compiled with and without the JIT, the VM can also be simulated
 
 The heap is simulated as a large contiguous byte array. References between objects are effectively indexes inside the byte array instead of pointers. All the C variables are simulated as Smalltalk objects. They used specific classes, such as \emph{CArrayAccessor} over normal Smalltalk classes, to emulate the C behavior (only array accesses are available in C, not high level iterator APIs, etc.). An interesting example is the execution stack. The stack is represented in \openSmalltalkVM as a double linked list of stack pages which are maintained by the VM. Each stack page is represented as a Smalltalk object.
 
+MEMORY FIGURE?
+
 All the Slang code is implemented in multiple Smalltalk classes, to organise the code and to add flexibility through polymorphism. For example, the AbstractCompactor class has two subclasses, one implements a sweep algorithm and the other a compact one. For production, at Slang-to-C compilation time, all the code is compiled in a single C file. All the flexibility is removed, using the same example, the VM developer chooses at this moment if he wants to compile a VM with a sweep or compact algorithm. No polymorphism is available at runtime. However, since polymorphism is available in the simulator, it can be abused for debugging purposes. Still re-using the same example, the AbstractCompactor class has also simulation specific subclasses. Such versions typically express additional constraints in the form of assertions which can be written in plain Smalltalk without restrictions to easily express complex constraints. They also keep specific values live so they can be accessed at debugging time.
 
 In Simulation, one of the core feature is to be able to re-use the whole Smalltalk IDE, including the browser, the inspectors and the debugger to develop and debug the VM. Most new features can be develop and debug interactively, adding code to the VM at runtime, in the simulation environment, as for normal Smalltalk programs.
@@ -269,27 +271,27 @@ We firstly discuss how we use the simulator to debug crashes in deployed applica
 
 \subsection{Debugging crashes with conditional breakpoints in machine code}
 
-TOWRITE FROM MY YOUTUBE VIDEO.
+TO WRITE FROM MY YOUTUBE VIDEO.
 Back-in-time debugging of machine state
 Conditional stepping.
 
-Ref Sista
+Ref Sista ManLang
+\cite{SistaFastStartUp}
+END TODO
 
 \subsection{Optimizing the templates with in-image compilation}
 
-HERE
-A few years ago, we added support in the VM for read-only objects \cite{ROObject}. Read-only objects were critical performance-wise for specific customers using them in the context of object databases. To maximize the performance, we changed the templates in the JIT compiler for the different memory stores. Since the template JIT has to generate very quickly machine code, it goes through the code three times: (1) it scans the bytecode, (2) it generates abstract instructions from the bytecode and (3) it generates the native instructions from the abstract instructions. The abstract instructions are mapped almost one to one to machine instructions, their main purpose is to compact the generated code by removing Nops used for jump targets or finding out out the size of jumps.
-
-To optimize the template, we use the in-image compilation framework. We selected a method with a single store to make it simple. We requested the JIT to generate the machine code and changed the store template until the machine code generated was the exact instructions we wanted. It is possible, in in-image compilation, to use the Smalltalk debugger on the JIT code itself to inspect the JIT state and fix the code on -the-fly without any recompilation process. Once we went through the few store templates (there are a few different templates for optimizations purposes, for example, storing a constant integer does not require a garbage collector write barrier check),
+A few years ago, we added support in the VM for read-only objects \cite{ROObject}. Read-only objects were critical performance-wise for specific customers using them in the context of object databases. To maximize the performance, we changed the templates in the JIT compiler for the different memory stores. %Since the JIT has to generate very quickly machine code, it goes through the code three times: (1) it scans the bytecode, (2) it generates abstract instructions from the bytecode and (3) it generates the native instructions from the abstract instructions. The abstract instructions are mapped almost one to one to machine instructions, their main purpose is to compact the generated code by removing Nops used for jump targets or finding out out the size of jumps.
+To optimize each template, we use the in-image compilation framework. We selected a method with a single store to make it simple. We requested the JIT to generate the machine code and changed the template to optimize until the machine code generated was the exact instructions we wanted. It is possible, in in-image compilation, to use the Smalltalk debugger on the JIT code itself to inspect the JIT state and fix the JIT code on-the-fly without any major compilation pause. Once we went through the few store templates (there are a few different templates for optimizations purposes, for example, storing a constant integer does not require a garbage collector write barrier check), we've just had to evaluate performance and correctness through benchmarks and tests to validate the implementation.
 
 \section{Virtual Machine Analysis: Directing performance decisions}
 \label{sec:Analysis}
 
-A side-effect of VM simulation, and specifically to be able to interrupt the simulation and introspect the simulated memory and simulation specific objects, is to be able to analyse the runtime with scripts written on-the-fly. 
+A side-effect of VM simulation, and specifically to be able to interrupt the simulation and introspect the simulated memory and simulation specific objects, is to be able to analyse the runtime with scripts written on-the-fly. Indeed, the simulator can be stopped at any given point and arbitrary Smalltalk code can be written and evaluated similarly to the \emph{eval} Javascript construct to analyse the simulated memory, including the machine code zone, the heap or any Smalltalk object representing the VM state.
 
 \subsection{Analysis example}
 
-One of the first analysis we run is to stop the simulation when the machine code zone reached 1Mb. We then iterated over the machine code zone and investigated what was in. As show in Table \ref{tab:generalAnalysis}, 1752 were compiled to machine code by the template JIT, 6352 sends\footnote{We use the Smalltalk terminology, send, to discuss virtual calls since we are talking about Smalltalk.} are present but 2409 of them are not linked (basically, they have never been used). 
+One of the first analysis we ran was on the machine code zone. We stopped the simulation when the machine code zone reached 1Mb. We then iterated over it and investigated what was in. As show in Table \ref{tab:generalAnalysis}, 1752 methods were compiled to machine code by the JIT, 6352 sends\footnote{We use the Smalltalk terminology, send, to discuss virtual calls since we are talking about Smalltalk.} are present but 2409 of them are not linked (basically, they have never been used). 
 
 \begin{table} [th]
 \centering
@@ -308,7 +310,7 @@ One of the first analysis we run is to stop the simulation when the machine code
 \label{tab:generalAnalysis}
 \end{table}
 
-Further analysis, in Table \ref{tab:polyAnalysis}, confirms Urs H\"{o}lzle analysis \cite{PICSelf}: around 90\% of used send sites are monomorphic, 9\% are polymorphic (up to 6 different cases in our implementation) and the remaining \% is megamorphic.
+Further analysis, in Table \ref{tab:polyAnalysis}, confirms Urs H\"{o}lzle statement \cite{PICSelf}: around 90\% of used send sites are monomorphic, around 9\% are polymorphic (up to 6 different cases in our implementation) and the remaining \% is megamorphic.
 
 \begin{table} [th]
 \centering
@@ -323,16 +325,16 @@ Further analysis, in Table \ref{tab:polyAnalysis}, confirms Urs H\"{o}lzle analy
 \label{tab:polyAnalysis}
 \end{table}
 
-The code for these analysis are detailed in the Section "Let Me Tell You All About It, Let Me Quantify" of the blog post "Build me a JIT as fast as you can"\footnote{http://www.mirandabanda.org/cogblog/2011/03/01/build-me-a-jit-as-fast-as-you-can/}.
+The code used for these analysis is detailed in the Section "Let Me Tell You All About It, Let Me Quantify" of the blog post "Build me a JIT as fast as you can"\footnote{http://www.mirandabanda.org/cogblog/2011/03/01/build-me-a-jit-as-fast-as-you-can/}.
 
 \subsection{Directing the VM behavior}
 
-The results of the analysis are used to direct performance design decisions on the VM. In this section we describe how the analysis impacted a design called "Early Polymorphic inline cache promotion".
+The results of the analysis are sometimes used to direct performance design decisions on the VM. In this section we describe how the analysis impacted a design called "Early polymorphic inline cache promotion".
 
-We designed the polymorphic inline caches (PICs) with two implementations:
+We designed the polymorphic inline caches (PICs) \cite{PICSelf} with two implementations:
 \begin{itemize}
 	\item \emph{Closed PICs:} Such caches can deal with up to 6 cases, and are basically implemented as a jump table.
-	\item \emph{Open PICs:} Such caches can deal with any number of cases, they consist of three probes searching the global look-up cache, a hash map shared with the interpreter, and fall back into a standard look-up routine if there is a cache miss.
+	\item \emph{Open PICs:} Such caches can deal with any number of cases, they consist of three probes searching the global look-up cache (a hash map shared with the interpreter) and fall back into a standard look-up routine if nothing is found after three attempts.
 \end{itemize}	
 
 One idea we had was to promote a monomorphic inline cache straight to an open PIC if available, and create the closed PIC only if no open PIC is available for the given selector. The benefit is avoiding lots of code space modifications and an allocation. The downside is replacing faster closed PIC dispatch with slower open PIC dispatch. The question is how many send sites would be prematurely promoted to megamorphic, or how many closed PICs have selectors for which there are open PICs. Analysing the question is easy in our context.
@@ -341,13 +343,13 @@ The analysis result showed that 17\% of polymorphic send sites would get prematu
 
 \section{Related Work and Conclusion}
 
-Many VM developers developed different tools to help them being more efficient, but they rarely publish about it. We focus in this section on two related work.
+Many VM developers implemented different tools to help them working more efficiently on their VM, but they rarely publish about it. We focus in this section on two related work.
 
-\paragraph{Maxine Inspectors.} The Maxine inspectors \cite{MaxineInspector} were demonstrated at OOPSLA'18. They allow to inspect the running state of the VM while it runs for debugging purposes. One of the main difference with out design is that the Maxine VM is metacircular, they do not have a simulation and a production mode as we do. We believe having two different modes allows us to easily generate a production artifact while still having nice debugging features. Having a full metacircular VM would be interesting. However, so far, most VMs used in production (Java, Javascript, etc.), even after the huge recent investments in the Javascript VMs by the four major web vendors, are still compiling through the C/C++ compiler and not metacircular. Hence, although a metacircular VM has interesting advantages, it is not clear it is that convenient to build a VM in such a way.
+\paragraph{Maxine Inspectors.} The Maxine inspectors \cite{MaxineInspector} were demonstrated at OOPSLA'18. They allow to inspect the running state of the Maxine VM while it runs for debugging purposes. One of the main difference with out design is that the Maxine VM is metacircular, hence it does not have a simulation and a production mode as we do but a single production debuggable mode. We believe having two different modes allows us to easily generate a production artefact while still having nice debugging features. Having a full metacircular VM would be interesting. However, so far, most VMs used in production (Java, Javascript, etc.), even after the huge recent investments in the Javascript VMs by the four major web vendors, are still compiling through the C/C++ compiler and are not metacircular. Hence, although a metacircular VM has interesting advantages, it is not clear it is that convenient to build a VM in such a way.
 
-\paragraph{RPython toolchain.}  The RPython toolchain \cite{RPythonToolchain} was designed and implemented quite similarly to \openSmalltalkVM. Most of the VM code is written in RPython, a restricted Python, instead of Slang, and some leftovers are written in plain C. The main difference is that RPython is much closer to Python than Slang is to Smalltalk, RPython allows higher level structures such as dictionaries to be used. The design decision comes with its set of advantages and drawbacks. The key advantage is that the RPython code feels like Python code and is relatively quite easy to read write. The main drawback is that RPython to C compilation takes way longer than the Slang to C compilation (up to 40 minutes in a recent Macbook pro for the RSqueak VM \cite{RSqueak}, instead of several seconds for Slang). 
+\paragraph{RPython toolchain.}  The RPython toolchain \cite{RPythonToolchain} was designed and implemented quite similarly to \openSmalltalkVM. Most of the VM code is written in RPython, a restricted Python, instead of Slang, and some leftovers are written in plain C. The main difference is that RPython is much closer to Python than Slang is to Smalltalk. RPython allows higher level structures such as dictionaries to be used. The design decision comes with its set of advantages and drawbacks. The key advantage is that the RPython code feels like Python code and is relatively quite easy to read write, unlike Slang which feels like C and is as easy to write as C. The main drawback is that RPython to C compilation takes way longer than the Slang to C compilation (up to 40 minutes in a recent Macbook pro for the RSqueak VM \cite{RSqueak}, instead of several seconds for Slang). 
 
-Although the RPython code can be executed as normal Python code, for some reasons, the developers seem to think it is not worth to do it, mostly because executing code in such a way is very slow. The overall architecture of the RPython toolchain is different, which leads to a longer time to reach peak performance (though their peak performance is at least in theory better than with a template JIT as \openSmalltalkVM features). This time may be very significant in simulation mode. In addition, RPython was originally designed for Python, which does not feature snapshot by default, so they cannot abuse snapshots to work around the simulation slow performance.
+Although the RPython code can be executed as normal Python code, for some reasons, the developers seem to think it is not worth to do such a thing, mostly because executing code in this way is very slow. The overall architecture of the RPython toolchain is different, which leads to a longer time to reach peak performance (though their peak performance is at least in theory better than with our JIT). This time may be quite significant in simulation mode. In addition, RPython was originally designed for Python, which does not feature snapshot by default, so they cannot abuse snapshots to work around the simulation slow performance.
 
 \subsection*{Conclusion}
 

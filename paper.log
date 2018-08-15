@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.22)  15 AUG 2018 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2016.9.22)  15 AUG 2018 17:07
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1465,9 +1465,6 @@ aches (PICs) [[]]
  []
 
 [6.6] (./paper.bbl
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 Underfull \hbox (badness 1371) in paragraph at lines 55--60
 []\T1/LinuxLibertineT-TLF/m/n/8 (+20) Tim Fel-gen-tr-eff, To-bias Pape, Patrick
  Rein, and Robert
@@ -1483,11 +1480,11 @@ Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: 06F77145047CD47548C82D4B0CC4DEC9;3342.
  ) 
 Here is how much of TeX's memory you used:
- 38092 strings out of 493014
- 818326 string characters out of 6133351
+ 38095 strings out of 493014
+ 818404 string characters out of 6133351
  1020044 words of memory out of 5000000
  40400 multiletter control sequences out of 15000+600000
- 161847 words of font info for 318 fonts, out of 8000000 for 9000
+ 162218 words of font info for 320 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  62i,11n,94p,1446b,609s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc
@@ -1503,7 +1500,7 @@ bertineTBI.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/libertine
 /LinLibertineTI.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfo
 nts/rtxr.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/public/txfonts/txs
 y.pfb>
-Output written on paper.pdf (7 pages, 438897 bytes).
+Output written on paper.pdf (7 pages, 439153 bytes).
 PDF statistics:
  286 PDF objects out of 1000 (max. 8388607)
  244 compressed objects within 3 object streams

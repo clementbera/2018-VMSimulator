@@ -81,6 +81,7 @@
 
 %% Title information
 \title[Two Decades of Smalltalk VM Development]{Two Decades of Smalltalk VM Development}
+\subtitle{Live VM development through Simulation Tools}
 
 %% Author with single affiliation.
 \author{Eliot Miranda}
@@ -209,17 +210,7 @@ In the following section, we explain the VM infrastructure with both the compila
 \section{Virtual Machine Infrastructure}
 \label{sec:VMSimulation}
 
-Figure \ref{fig:VMCompilation} depicts the main components of \openSmalltalkVM and its compilation process.
-%the VM code base is written both in Slang and in C. 
-The Core VM code consists of the interpreter, the JIT and the memory manager, and is written in Slang. The platform code, \emph{i.e.,} Operating System dependent code (such as file management or I/O), is written directly in C with a corresponding Smalltalk version for simulation. 
-%EXPLAIN scientifically in this part - no history. + FIGURE, basic with design. 
-
-\begin{figure}[bth!]
-		\centering
-		\includegraphics[width=0.55\linewidth]{figures/VMCompilation}
-		\caption{Cog \egb{u mean openSmalltalkVM?} VM compilation}
-		\label{fig:VMCompilation}
-\end{figure}
+The main components of \openSmalltalkVM, the interpreter, the JIT and the memory manager, are written in Slang. The platform code, \emph{i.e.,} Operating System dependent code (such as file management or I/O), is written directly in C with a corresponding Smalltalk version for simulation. 
 
 The VM executable is generated in a two step process. Firstly, the Slang-to-C compiler translates the Slang code to C code, generating a few files. This first step takes several seconds. Secondly, the C compiler (depending on the platform, LLVM or GCC), translates the C code into an executable. This second step may take several dozens of seconds the first time. But, depending on what the programmer changed and what the C compiler have cached, it usually only takes a few seconds to recompile the C code. 
 

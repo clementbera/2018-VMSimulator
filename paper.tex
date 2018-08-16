@@ -183,12 +183,9 @@ In this paper, we detail the VM simulation infrastructure and we report our expe
 \label{sec:intro}
 
 To specify the virtual machine (VM), the Smalltalk-80 team at Xerox PARC wrote a Smalltalk VM entirely in Smalltalk \cite{blueBook}. In 1995, members of the same team built an open-source Smalltalk \egb{dialect?} and VM, Squeak \cite{SqueakByExample}, using the code from \cite{blueBook} as a starting point. Part of the code base was, however, narrowed down to a subset of Smalltalk, called \emph{Slang}, to allow Smalltalk to C compilation \cite{BackToTheFuture}.
-
-\egb{Rewrote the paragraph to add old info from the abstract and add some flow to the explanation. Maybe we should also define here what simulation and production is (since the abstract is not considered to be part of the main body of the paper)}
- 
+\egb{Changed again this paragraph after reading section 2. Maybe we should also define here what simulation and production is (since the abstract is not considered to be part of the main body of the paper)}
+Dummy Smalltalk message sends were used to embed meta information in the code, such as \emph{self var: 'foo' type: 'char *'} which have no effect during simulation but guide the translation process of the executable Smalltalk.  
 Effectively, the VM could be both simulated by executing the Slang code on top of the Smalltalk VM or compiled through the C compiler to native code to generate the production VM. 
-The production VM can be derived by translating the core VM code to C, combining the generated C code with a set of platform-specific support files, and compiling with the platform's C compiler.
-Dummy Smalltalk message sends were used to embed meta information in the code, such as \emph{self var: 'foo' type: 'char *'} which have no effect during simulation but guide the translation process of the executable Smalltalk. 
 
 At this point, the VM consisted mainly in:
 \begin{itemize}
@@ -201,7 +198,6 @@ At this point, the VM consisted mainly in:
 The first three components of the VM were written entirely in Slang. A few extra features, such as file management, were written both in Smalltalk for simulation purposes and in C for the production VM.
 
 Over the years, the Squeak VM evolved to give birth recently to \openSmalltalkVM\footnote{https://github.com/OpenSmalltalk/opensmalltalk-vm/}, the default VM for various Smalltalk-like systems such as Pharo \cite{PharoByExample}, Squeak \cite{SqueakByExample}, Cuis, Croquet and Newspeak \cite{NewspeakOopsla}. 
-
 As the VM evolved, the original simulator co-evolved as a tool to develop and debug the VM. The meta data used to guide the translation process was replaced by \emph{pragmas} \cite{Pragmas}.  
 %One change moved the meta data that guides translation out of the executable Smalltalk into pragmas \cite{Pragmas}.  
 However, the most significant evolution of the simulator came with the introduction of the Just-In-Time compiler (JIT). 
@@ -216,21 +212,32 @@ In the following section, we explain the VM infrastructure with both the compila
 \section{Virtual Machine Infrastructure}
 \label{sec:VMSimulation}
 
-As shown in Figure \ref{fig:VMCompilation}, the VM code base is written both in Slang and in C. The Core VM code (the interpreter, the JIT and the memory manager), is written in Slang. The platform code, \emph{i.e.,} Operating System dependent code such as file management or I/O is written directly in C, with a corresponding Smalltalk version for simulation. 
+Figure \ref{fig:VMCompilation} depicts the main components of \openSmalltalkVM and its compilation process.
+%the VM code base is written both in Slang and in C. 
+The Core VM code consists of the interpreter, the JIT and the memory manager, and is written in Slang. The platform code, \emph{i.e.,} Operating System dependent code (such as file management or I/O), is written directly in C with a corresponding Smalltalk version for simulation. 
 %EXPLAIN scientifically in this part - no history. + FIGURE, basic with design. 
 
 \begin{figure}[bth!]
 		\centering
 		\includegraphics[width=0.55\linewidth]{figures/VMCompilation}
-		\caption{Cog VM compilation}
+		\caption{Cog \egb{u mean openSmalltalkVM?} VM compilation}
 		\label{fig:VMCompilation}
 \end{figure}
 
-The VM executable is generated in a two step process. Firstly, the Slang-to-C compiler translates the Slang code to C code, generating a few files. This first step takes several seconds. Secondly, the C compiler (depending on the platform, LLVM or GCC), translates the C code into an executable. This second step may take several dozens of seconds the first time, then, depending on what the programmer changed and what the C compiler have cached, it usually only takes a few seconds to recompile the C code. 
+The VM executable is generated in a two step process. Firstly, the Slang-to-C compiler translates the Slang code to C code, generating a few files. This first step takes several seconds. Secondly, the C compiler (depending on the platform, LLVM or GCC), translates the C code into an executable. This second step may take several dozens of seconds the first time. But, depending on what the programmer changed and what the C compiler have cached, it usually only takes a few seconds to recompile the C code. 
 
-The VM can be compiled in two main flavours, interpreter-only or interpreter+JIT. Although the version with the JIT is used in production, the interpreter version is convenient for special purposes. For example, debugging the garbage collector or evaluating new language features without dealing can be done in the interpreter-only VM, avoiding the JIT complexity.
+The VM can be compiled in two main flavours, interpreter-only or interpreter+JIT. Although the version with the JIT is used in production, the interpreter version is convenient for development purposes. For example, debugging the garbage collector or evaluating new language features can be done in the interpreter-only VM, avoiding the JIT complexity.
 
-There are multiple reasons why we keep writing the core components in Slang and not in C/C++. Most of them are small details. For instance, the Slang-to-C compiler generates C code slightly different from the Slang code using different annotations. It can for example duplicate the implementation of specific methods with specific constant operands to generate more efficient code in the interpreter. The main reason why we keep using Slang over C/C++ is VM simulation. By interpreting the Slang code as Smalltalk code, emulating native code using an external processor simulator and simulating the memory using a large byte array, we are able to simulate the whole VM execution, allowing development and debugging with the Smalltalk development tools and a live programming experience.
+There are multiple reasons why the core components are written in Slang and not in C/C++, being the most important VM simulation. 
+\egb{ I commented the texts on the details why you want to keep writing in Slang because they introduced noise to the explanation, and the important part is the simulation.}
+By interpreting the Slang code as Smalltalk code, emulating native code using an external processor simulator and simulating the memory using a large byte array, it is possible to simulate the whole VM execution. This allows development and debugging of the VM with the Smalltalk development tools resulting in a live programming experience for VM development.
+
+
+
+
+%Most of them are small details. For instance, the Slang-to-C compiler generates C code slightly different from the Slang code using different annotations. It can for example duplicate the implementation of specific methods with specific constant operands to generate more efficient code in the interpreter. The main reason why we keep using Slang over C/C++ is VM simulation. By interpreting the Slang code as Smalltalk code, emulating native code using an external processor simulator and simulating the memory using a large byte array, we are able to simulate the whole VM execution, allowing development and debugging with the Smalltalk development tools and a live programming experience.
+
+\egb{maybe it makes more sense to move the information of Figure 1 and the compilation process to Introduction to finish the part of VM architecture/development history, and use this last paragraph as a motivation to say that having a live programming experience for VM development helped to catch bugs, be more productive.. and mentioned that you in this paper you describe the architecture and how it helped?}
 
 \subsection{Simulating the Virtual Machine}
 

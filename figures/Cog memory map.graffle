@@ -205,7 +205,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2018-08-16 19:32:13 +0000</string>
+	<string>2018-08-17 15:37:38 +0000</string>
 	<key>Modifier</key>
 	<string>Clement Bera</string>
 	<key>MovementHandleVisible</key>
@@ -2703,7 +2703,7 @@ Stack}</string>
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\qc\partightenfactor0
 
-\f0\fs24 \cf0 Huge ByteArray, shared between Smalltalk and Processor Simulator}</string>
+\f0\fs24 \cf0 Single very large ByteArray, shared between Smalltalk and Processor Simulator}</string>
 						<key>VerticalPad</key>
 						<real>0.0</real>
 					</dict>
@@ -4620,7 +4620,7 @@ Scavenge}</string>
 		<key>Sidebar_Tab</key>
 		<integer>0</integer>
 		<key>VisibleRegion</key>
-		<string>{{-2, -29}, {746, 568}}</string>
+		<string>{{-2, -29}, {731, 553}}</string>
 		<key>ZoomValues</key>
 		<array>
 			<array>

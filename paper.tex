@@ -444,9 +444,11 @@ We designed the polymorphic inline caches (PICs) \cite{PICSelf} with two impleme
 	\item \emph{Open PICs:} Such caches can deal with any number of cases, they consist of three probes searching the global look-up cache (a hash map shared with the interpreter) and fall back into a standard look-up routine if nothing is found after three attempts.
 \end{itemize}	
 
-One idea we had was to promote a monomorphic inline cache straight to an open PIC if available, and create the closed PIC only if no open PIC is available for the given selector. The benefit is avoiding lots of code space modifications and an allocation. The downside is replacing faster closed PIC dispatch with slower open PIC dispatch. The question is how many send sites would be prematurely promoted to megamorphic, or how many closed PICs have selectors for which there are open PICs. Analysing the question is easy in our context.
+One idea we had was to promote a monomorphic inline cache straight to an open PIC if available, and create the closed PIC only if no open PIC is available for the given selector. The benefit is avoiding lots of code space modifications and an allocation. The downside is replacing faster closed PIC dispatch with slower open PIC dispatch. The question is how many send sites would be prematurely promoted to megamorphic, or how many closed PICs have selectors for which there are open PICs.
 
 The analysis result showed that 17\% of polymorphic send sites would get prematurely promoted. So we have implemented a simple sharing scheme. The JIT maintains a linked list of open PICs, and before it creates a closed PIC for a send site it will patch it to an open PIC if the list contains one for the send's selector.
+
+Analysing the question is easy in our context.  This analysis took about an hour to perform, including writing an iterator over send sites, and then implementing the eager promotion to open PICs.  Someshat similar analyses one of the authors performed on the second generation Deutsch Schiffman VM \cite{EfficientST80} , which is written entirely in C, when adding the same PIC scheme took several days, having to be written statically and tested with a traditional edit-compile-debug cycle. The performance difference is extreme.
 
 \section{Related Work and Conclusion}
 

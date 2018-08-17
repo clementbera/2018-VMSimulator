@@ -448,7 +448,7 @@ One idea we had was to promote a monomorphic inline cache straight to an open PI
 
 The analysis result showed that 17\% of polymorphic send sites would get prematurely promoted. So we have implemented a simple sharing scheme. The JIT maintains a linked list of open PICs, and before it creates a closed PIC for a send site it will patch it to an open PIC if the list contains one for the send's selector.
 
-Analysing the question is easy in our context.  This analysis took about an hour to perform, including writing an iterator over send sites, and then implementing the eager promotion to open PICs.  Someshat similar analyses one of the authors performed on the second generation Deutsch Schiffman VM \cite{EfficientST80} , which is written entirely in C, when adding the same PIC scheme took several days, having to be written statically and tested with a traditional edit-compile-debug cycle. The performance difference is extreme.
+Analysing the question is easy in our context.  This analysis took about an hour to perform, including writing an iterator over send sites, and then implementing the eager promotion to open PICs.  Somewhat similar analyses one of the authors performed on the second generation Deutsch Schiffman VM \cite{EfficientST80} , which is written entirely in C, when adding the same PIC scheme took several days, having to be written statically and tested with a traditional edit-compile-debug cycle. The productivity difference is extreme.
 
 \section{Related Work and Conclusion}
 

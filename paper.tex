@@ -237,17 +237,45 @@ The VM can actually be configured in two main flavours, interpreter-only or inte
 
 \subsection{Simulating the Virtual Machine}
 
-In this section, we firstly describe briefly the start-up sequence of \openSmalltalkVM using snapshots, a key aspect of the VM simulator success. Then, we detail the simulation of the interpreter-only VM. The simulation of the full VM is a superset and is explained in the last subsection.
+%Simulation allows for manipulating and inspecting Smalltalk image files.
+%In general, the simulator provides a toolkit for manipulating and inspecting image files.
+%\eem{this feels repetitious.  we should say this once, and once only.  where is it best said?}
+The key idea of the Simulation is to allow developers to reuse the whole Smalltalk IDE including the browser, inspectors and debugger to develop the VM. Most new features can be developed interactively, adding code to the VM at runtime, in the simulation environment, as for normal Smalltalk programming.
+
+%In Simulation, one of the core feature is to be able to re-use the whole Smalltalk IDE, including the browser, inspectors and debugger to develop the VM. Most new features can be developed interactively, adding code to the VM at runtime, in the simulation environment, as for normal Smalltalk programming.
+
+As the VM can be compiled with and without the JIT, the VM can also be simulated with or without the JIT. Before detailing the simulation of the interpreter-only VM and the simulation with the JIT, we briefly describe the start-up sequence of \openSmalltalkVM using snapshots, a key aspect of the VM simulator success. 
+
+%In this section, we firstly describe briefly the start-up sequence of \openSmalltalkVM using snapshots, a key aspect of the VM simulator success. Then, we detail the simulation of the interpreter-only VM. The simulation of the full VM is a superset and is explained in the last subsection.
 
 \paragraph{Start-up from snapshots.} 
-Smalltalk is an object \emph{system}, rather than a language. The entire system, including its development tools and application code is stored in a snapshot file, which is essentially a memory dump of the entire heap. A Smalltalk system is started by loading a snapshot file into a VM. The snapshot includes objects such as the classes, the compiled methods in the form of bytecodes and the running processes. At start-up, the VM restores the state of all objects in memory, swizzling pointers as required, and resumes execution in the process active when the snapshot was created.  A new snapshot can be made during or at the end of the session.
+Smalltalk is an object \emph{system}, rather than a language. The entire system, including its development tools and application code is stored in a snapshot file, which is essentially a memory dump of the entire heap. 
+%A Smalltalk system is started by loading a snapshot file into a VM. The snapshot includes objects such as the classes, the compiled methods in the form of bytecodes and the running processes. At start-up, the VM restores the state of all objects in memory, swizzling pointers as required, and resumes execution in the process active when the snapshot was created.  
+%A new snapshot can be made during or at the end of the session.
+When programming with Smalltalk, the programmer usually starts from a snapshot which contains the core libraries, the development environment and the application under development. 
+More precisely, the snapshot includes objects (such as the classes), the compiled methods in the form of bytecodes and the running processes.
+Developing applications consists essentially in writing and editing code, which effectively installs, modifies and removes classes and compiled methods from objects. Programming may be done live, as the application under development is running. %, for example creating or revising methods in the debugger, and continuing. 
+For example, objects may have their shape changed on the fly as instance variables are added and removed.  \footnote{Code is organised in packages which are saved to an external version control system, in our case Monticello \cite{Monticello}}.
+A new snapshot can be made during or at the end of the development session.
 
-When programming with Smalltalk, the programmer usually starts from a snapshot which contains the core libraries, the development environment and the application under development. Development of the application consists essentially in writing and editing code, which effectively installs, modifies and removes classes and compiled methods from the set of live objects. Programming may be done live, as the application under development is running, for example creating or revising methods in the debugger, and continuing.  Objects may have their shape changed on the fly as instance variables are added and removed.  \footnote{Code is organised in packages which are saved to an external version control system, in our case Monticello \cite{Monticello}}.
+%When programming with Smalltalk, the programmer usually starts from a snapshot which contains the core libraries, the development environment and the application under development. 
+%Development of the application consists essentially in writing and editing code, which effectively installs, modifies and removes classes and compiled methods from the set of live objects. Programming may be done live, as the application under development is running, for example creating or revising methods in the debugger, and continuing.  Objects may have their shape changed on the fly as instance variables are added and removed.  \footnote{Code is organised in packages which are saved to an external version control system, in our case Monticello \cite{Monticello}}.
 
-  Snapshots can be used to avoid long startup times for specific bugs.  A simulation can be run to a point where the bug is about to be induced, the system snapshotted, and then multiple analyses of the bug undertaken by loading the snapshot and resuming the simulation, short cutting the set up time for the simulator.  Simulation is of the order of a thousand times slower than actual execution.
+In general, the simulator provides a toolkit for manipulating and inspecting snapshot files.
+  Snapshots can be used to avoid long startup times for specific bugs.  A simulation can be run to a point where the bug is about to be injected, the system snapshotted, and then multiple analyses of the bug undertaken by loading the snapshot and resuming the simulation, short cutting the set up time for the simulator.  
+  %Simulation is of the order of a thousand times slower than actual execution.
+
+%shorteinig the miscellaneous uses.
+Besides being a key tool in VM development, the simulator can be used to indirectly allow the VM to be started from source files ~\cite{PharoBootstrap}. The simulator is also used to create 64-bit images from 32-bit images, a transformation that involves replacing certain instances of classes by certain others (e.g. in the 32-bit system all floats are 8 byte boxed objects while 64-bit systems support an immediate floating point type that represents a subset of 64-bit IEEE 754 floating point numbers).
+
+%\paragraph{Miscellaneous Uses}
+%Starting up \openSmalltalkVM from source files has never been supported. However, recent work~\cite{PharoBootstrap} allows a snapshot to be created from sources, indirectly allowing the VM to be started from source files. 
+%The bootstrap process uses the simulator to create and manipulate the heap and then to save the resulting snapshot.
+%The simulator is also used to create 64-bit images from 32-bit images, a transformation that involves replacing certain instances of classes by certain others, for example, the 64-bit system supports an immediate floating point type that represents a subset of 64-bit IEEE 754 floating point numbers whose exponent fits in the same 8-bit range as 32-bit IEEE 754 floats, whereas in the 32-bit system all floats are 8 byte boxed objects.
 
 \paragraph{Interpreter-only simulation.} 
-As the VM can be compiled with and without the JIT, the VM can also be simulated with or without the JIT. Since executing machine code on the processor simulators is not fast, the simulated interpreter may be faster \footnote{but JIT code is so much more optimized than bytecode interpretation that it may indeed be faster, depending on the code being executed}, and startup time and memory footprint are smaller.
+%As the VM can be compiled with and without the JIT, the VM can also be simulated with or without the JIT.
+ Since executing machine code on the processor simulators is not fast, the simulated interpreter may be faster \footnote{but JIT code is so much more optimized than bytecode interpretation that it may indeed be faster, depending on the code being executed}, and startup time and memory footprint are smaller.
 
 \begin{figure*}[ht!]
 		\centering
@@ -264,21 +292,10 @@ In the simulator, the heap is stored as a large contiguous byte array. Reference
 
 All the Slang code is implemented in multiple Smalltalk classes, to organise the code and to add flexibility through polymorphism. For example, the \texttt{AbstractCompactor} class has two subclasses, one implementing a sweep algorithm and the other a compact one. For production, at Slang-to-C compilation time, all the code is compiled in a single C file. All the flexibility is removed, using the same example, the VM developer chooses at this moment if he wants to compile a VM with a sweep or compact algorithm. No polymorphism is available at runtime. However, since polymorphism is available in the simulator, it can be reused for debugging purposes. Still in our example, the \texttt{AbstractCompactor} class has also simulation specific subclasses. Such versions typically express additional constraints in the form of assertions which can be written in plain Smalltalk without restrictions to easily express complex constraints. They also keep specific values live so they can be accessed at debugging time.
 
-\eem{this feels repetitious.  we should say this once, and once only.  where is it best said?}
-In Simulation, one of the core feature is to be able to re-use the whole Smalltalk IDE, including the browser, inspectors and debugger to develop the VM. Most new features can be developed interactively, adding code to the VM at runtime, in the simulation environment, as for normal Smalltalk programming.
-
-\paragraph{Miscellaneous Uses}
-
-In general, the simulator provides a toolkit for manipulating and inspecting image files.
-Starting up \openSmalltalkVM from source files has never been supported. However, recent work~\cite{PharoBootstrap} allows a snapshot to be created from sources, indirectly allowing the VM to be started from source files. 
-The bootstrap process uses the simulator to create and manipulate the heap and then to save the resulting snapshot.
-
-The simulator is also used to create 64-bit images from 32-bit images, a transformation that involves replacing certain instances of classes by certain others, for example, the 64-bit system supports an immediate floating point type that represents a subset of 64-bit IEEE 754 floating point numbers whose exponent fits in the same 8-bit range as 32-bit IEEE 754 floats, whereas in the 32-bit system all floats are 8 byte boxed objects.
-
 
 \paragraph{JIT simulation.} 
 
-In addition to the interpreter simulator, simulating the JIT requires simulate the execution of the native code it generates. The JIT itself is written in Slang and simulated with the Smalltalk execution model. To simulate the machine code, the start of the byte array representing the memory holds, when the JIT is enabled, the machine code generated at runtime. 
+In addition to the interpreter simulator, simulating the JIT requires simulate the execution of the native code it generates. The JIT itself is written in Slang and simulated wi th the Smalltalk execution model. To simulate the machine code, the start of the byte array representing the memory holds, when the JIT is enabled, the machine code generated at runtime. 
 
 Bindings to processor simulator libraries (Bochs for x86 and x64, Skyeye for ARMv6, SMalltalk code for 32-bit MIPSLE) were implemented so that the machine code can be executed safely. All but the MIPSLE simulators are accessed through SMalltalk primitives.  These are effectively a combination of an FFI call to invoke foreign code plus Smalltalk code that is executed if (the code invoked by) the primitive returns an error. The next two sections describe in detail how this scheme is used to ensure that simulation and production machine code agree, how simulation machien code is interfaced to the rest of teh simulation, and the debugging facilities for machine code that are available.
 

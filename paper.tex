@@ -519,7 +519,7 @@ This section discusses some related work: the Maxine inspector and the RPython t
 The key advantage of such a design choice is that the RPython code feels like Python code and is relatively quite easy to read write, unlike Slang which feels like C and is as easy to write as C. The main drawback is that RPython to C compilation takes much longer than the Slang to C compilation (up to 40 minutes in a recent Macbook pro for the RSqueak VM \cite{RSqueak}, instead of several seconds for Slang). 
 
 Although the RPython code can be executed as normal Python code, the developers seem to think it is not worth to do such a thing, mostly because executing code in this way is very slow. 
-The overall architecture of the RPython toolchain is different, resulting in a longer time to reach peak performance (though their peak performance is at least in theory better than with our JIT). This time may be quite significant in simulation mode. In contrast, in \openSmalltalkVM, we can reuse the snapshots to work around the simulation slow performance.
+The overall architecture of the RPython toolchain is different, resulting in a longer time to reach peak performance (though their peak performance is at least in theory better than with our JIT). This time may be quite significant in simulation mode. In contrast, in \openSmalltalkVM, we can reuse the snapshots to work around slow simulation performance.
 
 %In addition, RPython was originally designed for Python, which does not feature snapshot by default, so they cannot abuse snapshots to work around slow simulation performance.
 

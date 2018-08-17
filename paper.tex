@@ -387,10 +387,10 @@ Since we also have a bytecode assembler that allows us to manufacture bytecoded 
 
 In this section we describe our personal experiences using the simulation infrastructure to develop the VM. The different subsections consist in different tasks we had to implement and in each case we emphasise how we used the simulator and how it helped us perform the each given task.
 
-\subsection{Initial JIT Development and New Back Ends}
+\subsection{Initial JIT development and new back ends}
 When the JIT was first being developed and was at a state where bytecoded methods could actually be translated to machine code, development fell into a very productive and enjoyable pattern.  As a bytecode was encountered for which the template had yet to be written execution would stop in the debugger, which would create a skeleton implementation for the template method from the MessageNotUnderstood exception. The programmer would implement the body of the method and execution would continue.  Were the new template definition to be incorrect and cause a bug during JIT generation, rather than when the generated machine code was run, then the debugger could be used to wind execution back to the beginning of the JITting of the current method and resume execution, repeating the cycle until disassembly looked good, somewhat like lemming debugging above.  As a new method was encountered and JITted yet more templates would be encountered.  Similarly as the abstract machine instruction to concrete machine instruction mappings were added these could be implemented in the debugger, an experience repeated when new back ends were added. Much of the JIT was written in this interactive live style.  This style encourages tool creation because one can create, extend and polish tools in the middle of debugging sessions, enhancing them to make sense of ones current predicament.  Immediate feedback makes tool investment cheap and cheerful.
 
-\subsection{Debugging New GC Algorithms and Lemming Debugging}
+\subsection{Debugging new GC algorithms and Lemming Debugging}
 
 Debugging graph rewriting garbage collectors can be hard; bugs leave the heap in a scrambled state, and figuring out what happened when one is left with a corrupted graph, often too broken to traverse and make sense of, or apply tools to, is often effectively impossible.  But because the simulation is simply an object graph it is easy to copy the entire simulation. Therefore the simulator has been extended to by default take a copy of itself on every scavenge or old space reclamation, and to run the collection in the copy, performing a leak check afterwards (if enabled).  Hence if a bug occurs or validation fails it will fail in the copy while the original remains as is, yet to be corrupted.  We then take a fresh copy and use it to debug, repeating the process as many times as we like, an approach we call Lemming Debugging.  One throws the copy off the cliff and if it gets to the bottom without incident it is descarded and the simulation continues in the original.  This approach was key in rapid development of the new memory manager that supports both 32 and 64 bits \cite{Forwarders}.
 
@@ -538,7 +538,7 @@ In the near future, we plan to extend the simulator with customizable developmen
   %% acknowledge financial support and will be used by metadata
   %% extraction tools.
 \section*{Acknowledgements}
-The authors would like to thank Nicolas Cellier, Sophie Kaleba, Ryan Macnak, Tim Rowledge and all others who have contribted to OpenSmalltalk-VM over the years.
+The authors would like to thank Ryan Macnak who write the MIPSLE sprocessor simulator and MIPSLE back end.
 %  This material is based upon work supported by the
 %  \grantsponsor{GS100000001}{National Science
 %    Foundation}{http://dx.doi.org/10.13039/100000001} under Grant

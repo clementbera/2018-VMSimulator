@@ -205,7 +205,7 @@
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2018-08-15 14:48:31 +0000</string>
+	<string>2018-08-17 16:35:41 +0000</string>
 	<key>Modifier</key>
 	<string>Clement Bera</string>
 	<key>MovementHandleVisible</key>
@@ -305,7 +305,7 @@
 			<array>
 				<dict>
 					<key>Bounds</key>
-					<string>{{158.76998767256737, 365.25999182462692}, {329, 17}}</string>
+					<string>{{146.05998534709215, 365.25999182462692}, {329, 17}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -354,7 +354,7 @@
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{159.76999008655548, 322.51999250054359}, {344, 34}}</string>
+					<string>{{147.05998776108027, 322.51999250054359}, {362, 34}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -394,8 +394,8 @@
 {\*\expandedcolortbl;;}
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
 
-\f0\fs28 \cf0 Representation of the method, surrounded by a facade \
-to pretend it is a C structure with pointers}</string>
+\f0\fs28 \cf0 Representation of the method, surrounded by a facade to \
+pretend it is a sequence of bytes in a simulation byte array}</string>
 						<key>VerticalPad</key>
 						<real>0.0</real>
 					</dict>
@@ -404,7 +404,7 @@ to pretend it is a C structure with pointers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{159.76999008655548, 296.77999317646027}, {185, 17}}</string>
+					<string>{{147.05998776108027, 296.77999317646027}, {185, 17}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FitText</key>
@@ -453,7 +453,7 @@ to pretend it is a C structure with pointers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{120.9099935144186, 365.03999224305153}, {32.323676805386583, 17}}</string>
+					<string>{{108.19999118894339, 365.03999224305153}, {32.323676805386583, 17}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -483,7 +483,7 @@ to pretend it is a C structure with pointers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{125.4099935144186, 331.20754857870554}, {23.323676805386597, 16.624887843676007}}</string>
+					<string>{{112.69999118894339, 331.20754857870554}, {23.323676805386597, 16.624887843676007}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -515,7 +515,7 @@ to pretend it is a C structure with pointers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{120.9099935144186, 327.99999275803566}, {32.323676805386597, 23.039999485015869}}</string>
+					<string>{{108.19999118894339, 327.99999275803566}, {32.323676805386597, 23.039999485015869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -561,7 +561,7 @@ to pretend it is a C structure with pointers}</string>
 				</dict>
 				<dict>
 					<key>Bounds</key>
-					<string>{{120.9099935144186, 293.75999343395233}, {32.323676805386597, 23.039999485015869}}</string>
+					<string>{{108.19999118894339, 293.75999343395233}, {32.323676805386597, 23.039999485015869}}</string>
 					<key>Class</key>
 					<string>ShapedGraphic</string>
 					<key>FontInfo</key>
@@ -1212,7 +1212,7 @@ Code\
 		<key>CurrentSheet</key>
 		<integer>0</integer>
 		<key>Frame</key>
-		<string>{{-36, 52}, {1255, 726}}</string>
+		<string>{{435, 98}, {1255, 726}}</string>
 		<key>ShowInfo</key>
 		<true/>
 		<key>ShowRuler</key>
@@ -1224,7 +1224,7 @@ Code\
 		<key>Sidebar_Tab</key>
 		<integer>0</integer>
 		<key>VisibleRegion</key>
-		<string>{{-113, -53}, {706, 553}}</string>
+		<string>{{-60, -53}, {706, 553}}</string>
 		<key>ZoomValues</key>
 		<array>
 			<array>
